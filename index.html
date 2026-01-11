@@ -3,87 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudMoon Gaming Portal</title>
+    <title>CloudMoon Immersive</title>
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --dark: #1e1e2e;
-            --darker: #13131a;
-            --text: #ffffff;
-            --accent: #00cec9;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevents scrollbars on the main page */
         }
 
         body {
-            background-color: var(--darker);
-            color: var(--text);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        nav {
-            background: rgba(30, 30, 46, 0.95);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        /* Hero Section (The Player) */
-        .player-container {
+            background-color: #000;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
+        }
+
+        /* The Header Bar 
+           (Keeps it feeling like a specialized app, not just a browser tab)
+        */
+        #app-bar {
+            height: 40px;
+            background: #1a1a1a;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            min-height: 80vh;
-            padding: 20px;
-            background: radial-gradient(circle at center, #2d2d44 0%, var(--darker) 100%);
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #333;
+            z-index: 100;
         }
 
-        .screen-wrapper {
+        #app-title {
+            color: #fff;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ff88;
+        }
+
+        .controls button {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .controls button:hover {
+            background: #555;
+        }
+
+        /* The Main Frame 
+           This forces CloudMoon to take up the rest of the space
+        */
+        .viewport {
+            flex-grow: 1;
             width: 100%;
-            max-width: 1200px;
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(108, 92, 231, 0.3);
             position: relative;
-            aspect-ratio: 16/9;
         }
 
-        /* The Iframe for CloudMoon */
         iframe {
             width: 100%;
             height: 100%;
@@ -91,179 +83,68 @@
             display: block;
         }
 
-        /* Controls below the screen */
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Info Section */
-        .info-section {
-            padding: 4rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .info-section h2 {
-            margin-bottom: 1rem;
-            color: var(--secondary);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #00b894;
-            color: #000;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: var(--dark);
-            color: #888;
-            margin-top: auto;
-        }
-
-        /* Overlay for blocked iframes */
-        .embed-error {
+        /* Error Message Layer */
+        #block-message {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: #111;
+            color: #ccc;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 10;
-            display: none; /* Hidden by default */
+            font-family: sans-serif;
+            z-index: -1; /* Behind iframe by default */
         }
-        
-        .embed-error h3 { margin-bottom: 10px; }
-        .embed-error p { margin-bottom: 20px; max-width: 400px; text-align: center; color: #ccc; }
-
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">CloudNexus</div>
-        <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Games</a>
-            <a href="#">Premium</a>
-            <a href="#">Login</a>
+    <div id="app-bar">
+        <div id="app-title">
+            <div class="status-dot"></div>
+            CloudMoon Direct
         </div>
-    </nav>
-
-    <div class="player-container">
-        <div class="status-badge">● Systems Operational</div>
-        
-        <div class="screen-wrapper" id="gameScreen">
-            <div class="embed-error" id="embedError">
-                <h3>Connection Restricted</h3>
-                <p>CloudMoon's security settings are preventing direct embedding here. You can still play by opening the secure popup.</p>
-                <button class="btn-primary" onclick="openPopup()">Launch CloudMoon</button>
-            </div>
-
-            <iframe id="cloudFrame" src="https://web.cloudmoonapp.com/" allow="fullscreen; gamepad; microphone; camera" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals"></iframe>
-        </div>
-
         <div class="controls">
-            <button class="btn-primary" onclick="toggleFullscreen()">Go Fullscreen</button>
-            <button class="btn-outline" onclick="reloadFrame()">Refresh Stream</button>
-            <button class="btn-outline" onclick="openPopup()">Open in New Window</button>
+            <button onclick="refreshStream()">Reload Stream</button>
+            <button onclick="toggleFull()">Fullscreen</button>
         </div>
     </div>
 
-    <section class="info-section">
-        <h2>Powered by CloudMoon</h2>
-        <p>This portal is optimized for the CloudMoon web interface. Play high-end Android and PC games directly in your browser without downloading massive files. Supports gamepad integration and touch controls.</p>
-    </section>
+    <div class="viewport">
+        <iframe 
+            id="gameFrame"
+            src="https://web.cloudmoonapp.com/"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; gamepad; microphone; camera" 
+            sandbox="allow-downloads allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
+        ></iframe>
 
-    <footer>
-        <p>&copy; 2026 CloudNexus Portal. Not officially affiliated with CloudMoon.</p>
-    </footer>
+        <div id="block-message">
+            <h2>Stream Loading...</h2>
+            <p>If the screen stays grey, CloudMoon is blocking this connection.</p>
+        </div>
+    </div>
 
     <script>
-        const gameScreen = document.getElementById('gameScreen');
-        const iframe = document.getElementById('cloudFrame');
-        const errorOverlay = document.getElementById('embedError');
+        const iframe = document.getElementById('gameFrame');
 
-        // Function to make the game container fullscreen
-        function toggleFullscreen() {
+        function refreshStream() {
+            // Forces the iframe to reload within the same box
+            iframe.src = iframe.src;
+        }
+
+        function toggleFull() {
             if (!document.fullscreenElement) {
-                gameScreen.requestFullscreen().catch(err => {
-                    alert(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
-                });
+                document.documentElement.requestFullscreen();
             } else {
-                document.exitFullscreen();
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
             }
         }
-
-        // Function to reload the iframe
-        function reloadFrame() {
-            iframe.src = iframe.src;
-            // Reset error overlay just in case it works on reload
-            errorOverlay.style.display = 'none';
-        }
-
-        // Function to open in a popup window (Bypass Cross-Origin blocks)
-        function openPopup() {
-            window.open('https://web.cloudmoonapp.com/', 'CloudMoon', 'width=1280,height=720');
-        }
-
-        // Check if the iframe loads successfully
-        // Note: Browsers often block "load" event detection for cross-origin iframes for security,
-        // so we use a fallback timer to check if the user needs help.
-        window.onload = function() {
-            setTimeout(() => {
-                // If the screen is blank or the user reports issues, this overlay can be toggled manually
-                // But for auto-detection, we can't easily read inside the iframe due to CORS.
-                // We show the overlay if the iframe triggers an error (rarely detectable) or we can show a small help tip.
-                console.log("CloudMoon loaded. If screen is white, use 'Open in New Window'.");
-            }, 2000);
-        };
     </script>
 </body>
 </html>
