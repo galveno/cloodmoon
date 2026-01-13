@@ -2,75 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudMoon Portal</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #000;
-            overflow: hidden;
+    <title>Google Drive</title> <style>
+        body {
+            background: #202124;
+            color: white;
             font-family: sans-serif;
-        }
-
-        .navbar {
-            height: 40px;
-            background: #111;
-            color: #fff;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid #333;
-            font-size: 14px;
-            z-index: 100;
-            position: relative;
+            height: 100vh;
+            margin: 0;
         }
-
-        .iframe-container {
-            width: 100%;
-            height: calc(100% - 40px);
-            position: relative;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #4285f4;
+            color: white;
             border: none;
-            display: block;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        /* Message if the game refuses to load */
-        .error-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #555;
-            z-index: -1;
-            text-align: center;
-        }
+        button:hover { background: #3367d6; }
+        p { color: #aaa; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        LOCKED MODE &bull; CloudMoon
-    </div>
+    <button onclick="launchCloak()">Open Document</button>
+    <p>System Status: Secure</p>
 
-    <div class="iframe-container">
-        <div class="error-message">
-            <h3>Loading Stream...</h3>
-            <p>If this screen stays black, CloudMoon has completely blocked embedded access.</p>
-        </div>
+    <script>
+        function launchCloak() {
+            // 1. Open a blank popup window
+            let win = window.open('about:blank', '_blank');
 
-        <iframe 
-            src="https://web.cloudmoonapp.com/"
-            referrerpolicy="no-referrer"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; gamepad; microphone; camera"
-        ></iframe>
-    </div>
+            // 2. The HTML code we will inject into that blank window
+            // We use the "Strict" sandbox to prevent CloudMoon from breaking the cloak
+            let content = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>My Drive - Google Drive</title>
+                    <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png">
+                    <style>
+                        body { margin: 0; background: #000; height: 100vh; overflow: hidden; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <iframe 
+                        src="https://web.cloudmoonapp.com/" 
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+                        allow="fullscreen; gamepad; microphone; camera">
+                    </iframe>
+                </body>
+                </html>
+            `;
+
+            // 3. Write the code into the blank window
+            if (win) {
+                win.document.write(content);
+                win.document.close();
+            } else {
+                alert("Pop-up blocked! Please allow pop-ups for this site.");
+            }
+        }
+    </script>
 
 </body>
 </html>
